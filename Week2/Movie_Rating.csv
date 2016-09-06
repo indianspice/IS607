@@ -1,0 +1,31 @@
+Title,Genre,Director,RL_Name,RF_Name,Rating
+"Bad Moms",Comedy,"Scott Moore",Gunti,Carol,5
+"Bad Moms",Comedy,"Scott Moore",Rodstar,Denis,2
+"Bad Moms",Comedy,"Scott Moore",Goddin,Larry,3
+"Bad Moms",Comedy,"Scott Moore",Lewis,Jason,4
+"Bad Moms",Comedy,"Scott Moore",Morris,David,4
+"Don't Breathe","Suspense Thriller","Fede Alvarez",Gunti,Carol,2
+"Don't Breathe","Suspense Thriller","Fede Alvarez",Rodstar,Denis,4
+"Don't Breathe","Suspense Thriller","Fede Alvarez",Goddin,Larry,5
+"Don't Breathe","Suspense Thriller","Fede Alvarez",Lewis,Jason,2
+"Don't Breathe","Suspense Thriller","Fede Alvarez",Morris,David,1
+"Jason Bourne",Adventure,"Paul Greengrass",Lewis,Jason,3
+"Jason Bourne",Adventure,"Paul Greengrass",Morris,David,4
+"Jason Bourne",Adventure,"Paul Greengrass",Gunti,Carol,3
+"Jason Bourne",Adventure,"Paul Greengrass",Rodstar,Denis,3
+"Jason Bourne",Adventure,"Paul Greengrass",Goddin,Larry,2
+"Sausage Party",Comedy,"Conrad Vernon",Rodstar,Denis,1
+"Sausage Party",Comedy,"Conrad Vernon",Goddin,Larry,5
+"Sausage Party",Comedy,"Conrad Vernon",Lewis,Jason,2
+"Sausage Party",Comedy,"Conrad Vernon",Morris,David,4
+"Sausage Party",Comedy,"Conrad Vernon",Gunti,Carol,4
+"Suicide Squad",Action,"David Ayer",Lewis,Jason,4
+"Suicide Squad",Action,"David Ayer",Morris,David,5
+"Suicide Squad",Action,"David Ayer",Gunti,Carol,1
+"Suicide Squad",Action,"David Ayer",Rodstar,Denis,5
+"Suicide Squad",Action,"David Ayer",Goddin,Larry,1
+"War Dogs",Comedy,"Todd Phillips",Rodstar,Denis,1
+"War Dogs",Comedy,"Todd Phillips",Goddin,Larry,4
+"War Dogs",Comedy,"Todd Phillips",Lewis,Jason,2
+"War Dogs",Comedy,"Todd Phillips",Morris,David,2
+"War Dogs",Comedy,"Todd Phillips",Gunti,Carol,4

@@ -1,0 +1,30 @@
+---
+title: "IS607 Week2"
+author: "Sharon Morris"
+date: "September 5, 2016"
+output: html_document
+---
+
+**Introduction**
+
+This assignment creates a database using MySQl to rate 6 recently released movies by 5 people and to stored the information into R dataframe.
+
+The approached, create a two tables. The first table list information about the movies and the second database hold information about the reviewers. The reviewer table contain the movie ID from the movie table as the foreign key.
+
+**Conclusion**
+
+By creating a relationship between the movie and reviewer tables, creating SQL views of the joined tables makes it easier to view all information about the movies, reviewers and ratings in one table. 
+
+The view created by the joined tables is exported to a csv file and stored in a R dataframe. 
+
+The code below pulls the csv file into the r data frame.
+```{r}
+SqlFile <- read.csv(file="/users/shared/Movie_Rating.csv", 
+    header=TRUE, sep=",")
+```
+
+The code below provies a listing of the first 5 observations in the movie table.
+```{r}
+head(SqlFile)
+```
+

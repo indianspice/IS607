@@ -1,0 +1,121 @@
+---
+title: "IS607 Regular Expressions and Essential String Functions -- Week3"
+author: "Sharon Morris"
+date: "September 13, 2016"
+output: html_document
+---
+
+**Overview*
+
+The purpose of this exercise is to become familiar with expressions and essential string functions.
+
+
+```{r}
+library(stringr)
+```
+
+**Chapter 8 - Question 3**
+
+a) Use the tools of this chapter to rearrange the vector so that all elements confrom to the standard first_name Last_name.  
+
+```{r}
+raw.data <-"555-1239Moe Szyslak(636) 555-0113Burns, C. Montgomery555-6542Rev. Timothy Lovejoy555 8904Ned Flanders636-555-3226Simpson, Homer5553642Dr. Julius Hibbert"
+
+##Extract names
+name <- unlist(str_extract_all(raw.data, "[[:alpha:]., ]{2,}"))
+name
+
+##Extract phone numbers
+phone_num <- unlist(str_extract_all(raw.data, "\\(?(\\d{3})?\\)?(-| )?\\d{3}(-| )?\\d{4}"))
+phone_num <- unlist(str_extract_all(raw.data, "\\(?(\\d{3})?\\)?(-| )?\\d{3}(-| )?\\d{4}"))
+phone_num
+```
+
+```{r}
+fname <- str_replace(name, "C.", "Charles")
+fname <- str_extract(fname, "[[:punct:]]\\s[[:alpha:]]+")
+fname <- str_extract(fname, "[[:alpha:]]+")
+fname[is.na(fname)] <- str_extract(name, "[[:alpha:]]+")[is.na(fname)]
+lname <- str_extract(name,"[[:alpha:]]+($|,)")
+lname <- str_extract(lname,"[[:alpha:]]+")
+```
+
+```{r}
+data.frame(fname = fname, lname = lname, phone_num = phone_num)
+```
+
+
+b) Construct a logical vector indicating whether a character has a title (i.e., Rev. and Dr.)  
+
+```{r}
+str_detect(name, "[[:alpha:]]{2,3}[.]")
+```
+
+c) Construct a logical vector indicating whether a character has a second name  
+
+```{r}
+second_name <- str_detect(name," [A-z]{1}\\. ")
+df <- data.frame(name, second_name)
+df
+```
+
+**Chapter 8 - Question 4**
+
+Describe the types of strings that conform to the following regular expressions and construct an example that is matched by the regular expression.  
+
+a) [0-9] + \\$
+
+0-9 = any digit will be matched, + = 0-9 will be matched one or more times, // = look for special characters that follow the literal character
+```{r}
+weight <- c("100lbs$", "110lbs", "120.5lbs$", "125$")
+unlist(str_extract_all(weight, "[0-9]+\\$"))
+```
+
+b) \\b[a-z] {1,4}\\b  
+
+[a-z] = any word, with 4 or less letters, will be extracted with the double \\ identifying the beginning and end of the words.The space separates the words.
+
+```{r}
+words <- c("Sunday", "Mon", "Tuesday", "Wednesday", "Thursday", "Fri", "bi weekly")
+unlist(str_extract_all(words, "\\b[a-z]{1,4}\\b"))
+```
+
+c) .*?\\.txt$
+
+.* = a single character will be matched non or many times. ?= the information before is optional and will be matched once. \. = will match as a literal character followed by a string and $ indicates the end.
+
+```{r}
+days <- c("Sunday.txt", "*Monday.txt", "*.xls", "Tuesday.txt", "Wednesday.gif", ".txt", ".txt.txt")
+unlist(str_extract_all(days, ".*?\\.txt$"))
+```
+
+d) \\d{2}/\\d{2}/\\d{4}
+
+This is similar to date formats = 2 numbers / then 2 numbers / 4 numbers
+
+```{r}
+vec_date <- c("September 15, 2016", "09/15/2016", "09/15/16", "9/15/2016" )
+unlist(str_extract_all(vec_date, "\\d{2}/\\d{2}/\\d{4}"))
+```
+
+e) <(.+?) >.+?</\\1>
+
+(.+?) = any groupg of characters. <> like html tags indicates the beginning and the end of tags
+
+```{r}
+html_tags <- c("<>", "<c>href</c>", "<head> <title>HTML Tags in R</title> </head>")
+unlist(str_extract_all(html_tags, "<(.+?)>.+?</\\1>"))
+```
+
+**Chapter 8 - Question 9**
+The following code hides a secret message. Crack it with R and regular expression.
+
+clcopCow1zmstc0d87wnkig7OvdicpNuggvhryn92Gjuwczi8hqrfpRxs5Aj5dwpn0TanwoUwisdij7L j8kpf03AT5Idr3coc0bt7yczjatOaootj55t3Nj3ne6c4Sfek.r1w1YwwojigOd6vrfUrbz2.2bkAnbhz gv4R9i05zEcrop.wAgnb.SqoU65fPa1otfb7wEm24k6t3sR9zqe5fy89n6Nd5t9kc4fE905gmc4Rgxo5nhDk!gr
+
+```{r}
+secret_mess <- c("clcopCow1zmstc0d87wnkig7OvdicpNuggvhryn92Gjuwczi8hqrfpRxs5Aj5dwpn0TanwoUwisdij7L j8kpf03AT5Idr3coc0bt7yczjatOaootj55t3Nj3ne6c4Sfek.r1w1YwwojigOd6vrfUrbz2.2bkAnbhz gv4R9i05zEcrop.wAgnb.SqoU65fPa1otfb7wEm24k6t3sR9zqe5fy89n6Nd5t9kc4fE905gmc4Rgxo5nhDk!gr")
+reveal<-unlist(str_extract_all(secret_mess, "[[:upper:].]{1,}"))
+print(reveal[1:29], quote=FALSE)
+
+```
+

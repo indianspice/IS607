@@ -1,0 +1,131 @@
+---
+title: "IS607 Project1"
+author: "Sharon Morris"
+date: "September 18, 2016"
+output: html_document
+---
+
+**Introduction**
+In this project, you’re given a text file with chess tournament results where the information has some structure. Your job is to create an R Markdown file that generates a .CSV file (that could for example be imported into a SQL database) with the following information for all of the players:
+
+Player’s Name, Player’s State, Total Number of Points, Player’s Pre-Rating, and Average Pre Chess Rating of Opponents
+
+For the first player, the information would be:
+
+Gary Hua, ON, 6.0, 1794, 1605
+
+1605 was calculated by using the pre-tournament opponents’ ratings of 1436, 1563, 1600, 1610, 1649, 1663, 1716, and dividing by the total number of games played.
+
+The chess rating system (invented by a Minnesota statistician named Arpad Elo) has been used in many other contexts, including assessing relative strength of employment candidates by human resource departments.
+
+**Import text file into R**
+
+```{r}
+tourinfo <- read.table("tournamentinfo.txt", sep = "\n", header=TRUE)
+
+```
+
+**Examin Data**
+
+```{r}
+# Top of data
+head(tourinfo, 10)
+
+# End of data
+tail(tourinfo, 10)
+
+# Structure of the data
+str(tourinfo)
+
+# Dimensions
+dim(tourinfo)
+
+# Missing values
+is.na(tourinfo)
+
+# Data class
+class(tourinfo)
+
+```
+
+**Extract player name**
+
+```{r}
+library(stringr)
+player_name <- (str_trim(unlist(str_extract_all(unlist(tourinfo), 
+                "([[:alpha:] ]-?){13,50}"))))[1:64]
+
+head(player_name, 10)
+```
+
+**Extrat state**
+
+```{r}
+state <- str_trim(unlist(str_extract_all(unlist(tourinfo), "MI | ON | OH ")))
+
+head(state, 10)
+```
+
+**Extract pre-rating**
+
+```{r}
+
+# Extact players pre-rating
+# check class
+class(1794)
+
+pre_ratng <- str_replace_all(str_trim(unlist(str_extract_all(unlist(tourinfo),
+                                "R: [[:digit:] ]*"))), "R: ", "")
+head(pre_ratng, 10)
+```
+
+**Extract round**
+
+```{r}
+r <- str_sub(unlist(tourinfo), start = 48, end = 89) [c(seq(1, length(unlist(tourinfo)),
+                        by = 3))]
+head(r, 10)
+```
+
+**Convert data frame to a numeric matrix**
+Data are numeric so no need to coerce 
+
+```{r}
+# Extract the characters W B D L H
+rating <- str_extract_all(r, "( |\\d){4}")
+           
+head(rating, 10)
+```
+
+# Coerce character variables to numeric inorder to convert to numeric matrix
+
+```{r}
+rating <- as.numeric(unlist(rating))
+```
+
+```{r}
+# Convert data frame to numberic matrix
+ratng_convert <- matrix (rating, nrow = 1, ncol = 64)
+head(ratng_convert, 10)
+```
+
+```{r}
+# Calculate average
+average <- colMeans((ratng_convert))
+```
+
+**Print data**
+
+```{r}
+data.frame(player_name, state, pre_ratng, average)
+
+```
+
+
+**Output file**
+
+```{r}
+touraverage <- data.frame(player_name, state, pre_ratng, average)
+write.csv(touraverage, file="/users/sharonmorris/IS607/tournamentinfodone.txt")
+```
+

@@ -1,0 +1,95 @@
+---
+title: "Tidying and Transforming Data"
+author: "Sharon Morris"
+date: "September 25, 2016"
+output: pdf_document
+---
+
+(1) Create a CSV file (or optionally, a MySQL database!) that includes all of the information above. You’re encouraged to use a “wide” structure similar to how the information appears above, so that you can practice tidying and transformations as described below.
+
+(2)Read the information from your CSV file into R,and use tidyr and dplyr as needed to tidy and transform your data.
+
+(3) Perform analysis to compare the arrival delays for the two airlines.
+
+Import csv file
+
+```{r}
+week6 <- read.csv('week5.csv',header=TRUE,stringsAsFactors = FALSE)
+week6
+```
+
+Remove all rows and missing data
+
+```{r}
+library(tidyr)
+
+na <- na.omit(week6)
+head(na)
+```
+
+Add airline name to rows
+
+Without the added row names the spread will not run because values in rows without names
+are treated as duplicates
+
+```{r}
+
+na[2,1] <-  na[1,1] 
+na[4,1] <-  na[3,1]
+
+head(na)
+
+```
+
+
+Insert column names
+
+```{r}
+
+names(na)[1:2] <- c('Airline', 'Status')
+na
+```
+
+Transform data -- make city into 1 column
+
+```{r}
+
+na <- gather(na, "City", Count,3:7)
+na
+```
+
+Remove . from state names
+
+```{r}
+na$City<-gsub("\\."," ",na$City)
+
+na
+```
+
+
+Separate values in Status column
+
+```{r}
+na<-spread(na, Status, Count)
+
+head(na)
+```
+
+Rename column on time 
+
+```{r}
+colnames(na)[4] <- "Ontime"
+
+head(na)
+```
+
+Analysis of airline arrival and departures
+
+```{r}
+library(dplyr)
+Compare <- na %>% group_by(City, Airline) %>% summarise(ComOntime=sum(Ontime), 
+                                        ComDelay=sum(delayed), 
+                                   Compariosn=ComOntime/(ComOntime+ComDelay)*100)
+Compare
+```
+

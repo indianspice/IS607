@@ -1,0 +1,386 @@
+---
+title: "Tidying and Transforming Data Project 2 IS607 Week 6"
+author: "Sharon Morris"
+date: "October 9, 2016"
+output: pdf_document
+  
+---
+**Introduction**
+
+The purpose of this assignment is to prepare data from several sources for analysis.
+
+For each of the three chosen datasets:
+1) Create a .CSV file (or optionally, a MySQL database!) that includes all of the information included in the dataset. You’re encouraged to use a “wide” structure similar to how the information appears in the discussion item, so that you can practice tidying and transformations as described below.
+
+2) Read the information from your .CSV file into R, and use tidyr and dplyr as needed to tidy and transform your data. [Most of your grade will be based on this step!]
+ Perform the analysis requested in the discussion item.
+ Your code should be in an R Markdown file, posted to rpubs.com, and should include
+narrative descriptions of your data cleanup work, analysis, and conclusions.
+
+**Dataset 1 Description**
+
+This data set is New York City Citibike usage during June 2016. 
+
+Analysis:
+1. Determine the profile of a Citibike rider
+2. Time of day the longest rides occur
+
+Read data into R
+
+```{r }
+
+citibike <- read.csv('201606_citibike_tripdata.csv',header=TRUE,stringsAsFactors = FALSE)
+
+head(citibike)
+```
+
+Explore the data set
+
+```{r }
+# Verify whether is a data.frame
+class(citibike)
+
+# Check the dimensions
+dim(citibike)
+
+# View the column names
+names(citibike)
+
+# View the beginning of the data
+head(citibike)
+
+# View end of the data
+tail(citibike)
+```
+
+Summarize the data
+
+```{r}
+library(dplyr)
+
+# View the structure of the data
+glimpse(citibike)
+
+# View a summary of the data
+summary(citibike)
+```
+
+Take a random sample of 300 since dataset is too large
+
+```{r}
+citisample <- citibike[sample(nrow(citibike), 1000), ]
+dim(citisample)
+```
+
+Filter usertype = customer from the dataset since there is no gender or year of birth information is avaialble they are coded as 0. Customers are non-scribers 
+
+```{r}
+citisampfilt <- filter(citisample, usertype == 'Subscriber')
+
+# Remove NA
+citina <- na.omit(citisampfilt)
+```
+
+
+Select colums to be used for analysis
+
+```{r}
+library(dplyr)
+citisubset <- select(citina, tripduration, starttime, stoptime, start.station.id, start.station.name, end.station.id, end.station.name, bikeid, usertype, birth.year, gender)
+names(citisubset)
+head(citisubset)
+```
+
+Separate starttime and stoptime columnsdate and time into 2 columns to perform analysis
+
+```{r}
+# Split stattime colum into 2 STime and SDate
+startDate <- format(as.POSIXct(strptime(citisubset$starttime,"%m/%d/%Y %H:%M:%S",tz="")),  format = "%m/%d/%Y")
+startTime <- format(as.POSIXct(strptime(citisubset$starttime,"%m/%d/%Y %H:%M:%S",tz="")), format = "%H:%M:%S")
+citisubset$startDate <- startDate
+citisubset$startTime <- startTime
+
+# Split stoptime colum into 2 STime and SDate
+stopDate <- format(as.POSIXct(strptime(citisubset$stoptime,"%m/%d/%Y %H:%M:%S",tz="")),  format = "%m/%d/%Y")
+stopTime <- format(as.POSIXct(strptime(citisubset$stoptime,"%m/%d/%Y %H:%M:%S",tz="")), format = "%H:%M:%S")
+citisubset$stopDate <- stopDate
+citisubset$stopTime <- stopTime
+
+citisplit <- citisubset
+head(citisplit)
+
+```
+
+Drop starttime and endtime columns
+
+```{r}
+citisplit <- subset(citisubset, select = c(1,4,5,6,7,8,9,10,11,12,13,14,15))
+
+head(citisplit)
+```
+
+Calculate age and add column to dataset
+
+```{r}
+citisplit$stopDated = as.Date(citisplit$stopDate, format="%m/%d/%Y")
+citisplit$birth.yearn = as.numeric(substr(citisplit$birth.year,1,999))
+citisplit$age = as.numeric(format(citisplit$stopDated,"%Y")) - citisplit$birth.yearn
+    
+head(citisplit)
+ 
+```
+
+Convert age variable into intervals and add column of intervals to dataset
+
+```{r}
+citisplit$agerange <- cut(citisplit$age, breaks= c(18, 24, 30, 35, 40, 50, 60, 80), 
+                 labels = c("18-24 years", "25-30 years", "31-35 years", "36-40 years",
+                            "41-50 years", "51-60 years", "65 plus"),
+                right = FALSE)
+```
+
+Examine riders
+
+This histogram is skewed to the right, the majority of citibike rides tend to be younger and male
+
+```{r}
+hist(citisplit$age)
+
+hist(citisplit$gender)
+```
+
+If a user is a customer and not a subscriber there is no age or gender recorded
+
+```{r}
+# Mean age of riders
+mean(citisplit$age)
+
+# Recode gender variable 1=Male, 2=Female
+citisplit$gender2 <- ifelse(citisplit$gender == 1, "Male", ifelse(citisplit$gender == 2, "Female", "Other"))
+head(citisplit)
+# Crosstab agerange by subscriber
+require(eeptools)
+varnames<-c('Male','Female')
+crosstabs(citisplit, rowvar = "agerange",colvar = "gender2",
+          varnames=varnames, digits = 2)
+
+```
+
+**Conclusion**
+
+The majority of citibike users are subscribers. The average age of citibike subscribers is 39 years old. The majority are male.
+
+
+**Dataset 2 Description**
+New York City demographic data
+
+One can use this dataset for targeted Marketing Campaign based on Demography. For example, a manufacturer of Sporting Goods or a Sport Store can choose a county for their campaign based on residents age. Another example would be to do targeted campaign on the basis of second/native language. 
+
+
+Read data
+
+```{r}
+demographic <- read.csv('Demographic_Statistics_By_Zip_Code.csv',
+                        header=TRUE,stringsAsFactors = FALSE)
+
+head(demographic)
+```
+
+Convert data frame to table to make it easier
+
+```{r}
+demographic <- tbl_df(demographic)
+
+```
+
+Explore the data
+
+```{r}
+# Verify whether is a dataframe
+class(demographic)
+
+# Check the dimensions
+dim(demographic)
+
+# View the column names
+names(demographic)
+```
+
+Summarize the data
+
+```{r}
+library(dplyr)
+glimpse(demographic)
+
+# Summurize data
+summary(demographic)
+
+# View the top of the data
+head(demographic)
+
+# View end of the data
+tail(demographic)
+```
+
+Visualize the data
+
+```{r}
+# Histrogram of data
+hist(demographic$PERCENT.FEMALE)
+
+# Scatter plot comparing citizen status total and public assistance total
+plot(demographic$COUNT.CITIZEN.STATUS.TOTAL, demographic$COUNT.PUBLIC.ASSISTANCE.TOTAL)
+```
+
+Select columns fromd data set required to perform the analysis
+
+```{r}
+demoSplit <- select(demographic, JURISDICTION.NAME, COUNT.PARTICIPANTS, COUNT.FEMALE,
+                    PERCENT.FEMALE, COUNT.MALE, COUNT.PACIFIC.ISLANDER, 
+                    COUNT.HISPANIC.LATINO, COUNT.AMERICAN.INDIAN, 
+                    COUNT.ASIAN.NON.HISPANIC,COUNT.WHITE.NON.HISPANIC, 
+                    COUNT.BLACK.NON.HISPANIC, COUNT.OTHER.ETHNICITY,
+                    COUNT.PERMANENT.RESIDENT.ALIEN, COUNT.US.CITIZEN,
+                    COUNT.RECEIVES.PUBLIC.ASSISTANCE, COUNT.NRECEIVES.PUBLIC.ASSISTANCE,
+                    COUNT.PUBLIC.ASSISTANCE.TOTAL)
+head(demoSplit)
+```
+
+Identiy zipcodes where female participants live -- the owner of a women's jewelry store would like to determine the ideal zipcode to open her store.
+
+```{r}
+# Number of males and female in dataset
+
+# Female by zipcodes
+sum(demoSplit$COUNT.FEMALE, demoSplit$COUNT.MALE)
+
+demoFemale <- select(demoSplit, JURISDICTION.NAME, COUNT.FEMALE, PERCENT.FEMALE,
+                     COUNT.NRECEIVES.PUBLIC.ASSISTANCE)
+               demoFemale <- filter(demoFemale, JURISDICTION.NAME, 
+                                    COUNT.NRECEIVES.PUBLIC.ASSISTANCE, 
+                                    PERCENT.FEMALE > 0)
+
+arrange(demoFemale, PERCENT.FEMALE)
+```
+
+**Conclusion**
+
+A profile of women by zipcode that do not receive public assistance. This would be important for a business owner interested in opening a business that caters to women.
+
+
+**Dataset 3 Description**
+
+People visit hospitals for treatment of medical conditions. Providers charge differently in different parts of the country for the same service. These data include information comparing the charges for the 100 most common inpatient services and 30 common outpatient services.
+
+In this dataset you will notice that providers charge for items/services provided to patients. It will be interestingly to perform exploratory data analysis on this dataset to determine how charges differ based on the location of the provider.
+
+
+Read data
+
+```{r}
+provider <- read.csv('IPPS__Provider_Summary_FY2011.csv', header=TRUE,stringsAsFactors = FALSE)
+
+head(provider)
+```
+
+Convert data frame to a table
+
+```{r}
+provider <- tbl_df(provider)
+head(provider)
+```
+
+Examine the data
+
+```{r}
+# Check data class
+class(provider)
+
+# Check dimensions of the data
+dim(provider)
+
+# View the column names
+names(provider)
+
+# View the end of the data
+tail(provider)
+```
+
+View the structure of the data
+
+```{r}
+library(dplyr)
+
+glimpse(provider)
+
+summary(provider)
+
+names(provider)
+```
+
+Look at missing values
+
+```{r}
+sum(is.na(provider))
+```
+
+
+Create dataset with variables to be used for analysis
+
+```{r}
+providerSel <- select(provider, DRG.Definition, Provider.Id, Provider.Name,
+                      Provider.State, Average.Covered.Charges, Average.Total.Payments,
+                      Average.Medicare.Payments)
+names(providerSel)
+```
+
+Examine maximum and minimum average covered charges by state
+
+```{r}
+# Select columns for analysis
+
+providerSelPay <- select(providerSel, Provider.State, Average.Covered.Charges,
+                      Average.Total.Payments, Average.Medicare.Payments)
+
+# Remove commas and $ from data and convert to numeric
+providerSelPay$Average.Covered.Charges2 = as.numeric(gsub("[$,]", "", 
+providerSelPay$Average.Covered.Charges))
+providerSelPay$Average.Total.Payments2 = as.numeric(gsub("[$,]", "", 
+providerSelPay$Average.Total.Payments))
+providerSelPay$Average.Medicare.Payments2 = as.numeric(gsub("[$,]", "", 
+providerSelPay$Average.Medicare.Payments))
+
+```
+
+Calculate means
+
+```{r}
+# Mean of Average.Covered.Charges
+mean(providerSelPay$Average.Covered.Charges2)
+
+# Mean of Average Total Payments
+mean(providerSelPay$Average.Total.Payments2)
+
+# Mean Average Medicare Payments
+mean(providerSelPay$Average.Medicare.Payments2)
+```
+
+Aggregate data for max value and mean by state
+
+```{r}
+# Max by state
+temp <- aggregate(Average.Total.Payments2 ~ Provider.State, providerSelPay, function(x) max(x))
+
+arrange(temp, Average.Total.Payments2)
+
+ # Mean by state
+temp2 <-aggregate(Average.Total.Payments2 ~ Provider.State, providerSelPay, function(x) mean(x))
+arrange(temp2, Average.Total.Payments2)
+```
+
+
+**Conclusion**
+Charges by provider vary by states. Average total payments are the highest in California and lowest in Montana.
+
+
+

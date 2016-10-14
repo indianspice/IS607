@@ -7,7 +7,7 @@
     <body>
         <table>
             <tr><td>Book Title</td><td>Authors</td><td>Publisher</td><td>ISBN</td></tr>
-            <tr><td>Origins: George Washington’s Secret Six: The Spy Ring that Saved The American Revolution</td><td>Brian Kilmeade, Don Yeager</td><td>Sentinel</td><td>978-1595231031</td></tr>
+            <tr><td>Origins: George Washington Secret Six: The Spy Ring that Saved The American Revolution</td><td>Brian Kilmeade, Don Yeager</td><td>Sentinel</td><td>978-1595231031</td></tr>
             <tr><td>Che Guevara: A Revolutionary Life</td><td>Jon Lee Anderson</td><td>Grove Press</td><td>978-0802144119</td></tr>
             <tr><td>Pocahontas</td><td>Joseph Bruchac</td><td>HMN Books for Young Readers</td><td>978-0152054650</td></tr>
         </table>

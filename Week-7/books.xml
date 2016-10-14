@@ -1,1 +1,22 @@
 
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<books>
+  <book id="1">
+    <name>George Washington Secret Six: The Spy Ring that Saved The American Revolution</name>
+    <author first="Brian Kilmeade" second="Don Yeager"/>
+    <publisher>Sentinel</publisher>
+    <ISBN>978-1595231031</ISBN>
+  </book>
+  <book id="2">
+    <name>Che Guevara: A Revolutionary Life</name>
+    <author>Jon Lee Anderson</author>
+    <publisher>Grove Press</publisher>
+    <ISBN>978-0802144119</ISBN>
+  </book>
+  <book id="3">
+    <name>Pocahontas</name>
+    <author>Joseph Bruchac</author>
+    <publisher>HMN Books for Young Readers</publisher>
+    <ISBN>978-0152054650</ISBN>
+  </book>
+</books>

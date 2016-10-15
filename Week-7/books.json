@@ -1,1 +1,21 @@
 
+{"Books I Enjoyed":[
+	{
+	"book" : "George Washington Secret Six: The Spy Ring that Saved The American Revolution",
+	"author" : ["Brian Kilmeade", "Don Yeager"],
+	"publisher" : "Sentinel",
+	"ISBN" : "978-1595231031"
+	},
+	{
+	"book" : "Che Guevara: A Revolutionary Life",
+	"author" : "Jon Lee Anderson",
+	"publisher" : "Grove Press",
+	"ISBN" : "978-0802144119"
+	},
+	{
+	"book" : "Pocahontas",
+	"author" : "Joseph Bruchac",
+	"publisher" : "HMN Books for Young Readers",
+	"ISBN" : "978-0152054650"
+	}]
+}

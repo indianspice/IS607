@@ -1,0 +1,54 @@
+---
+title: "Web APIs - IS607 Week10"
+author: "Sharon Morris"
+date: "October 30, 2016"
+output: pdf_document
+---
+
+**Introduction**
+The New York Times web site provides a rich set of APIs, as described here: http://developer.nytimes.com/docs You’ll need to start by signing up for an API key.
+
+Your task is to choose one of the New York Times APIs, construct an interface in R to read in the JSON data, and transform it to an R dataframe.
+
+Search the top stories list of articles and associated images by the sections
+
+```{r}
+# Load library
+library(jsonlite)
+library(dplyr)
+```
+
+```{r}
+
+articleUrl <- "http://api.nytimes.com/svc/search/v2/articlesearch.json?q=%s&sort=newest&api-key=82badbe8a6564c9cbf9c12f877fdffc9"
+
+out <- fromJSON(articleUrl)
+out
+
+```
+
+
+
+```{r}
+# Display column names in data frame
+outDf <- data.frame(out[[1]]$docs)
+variable.names(outDf)
+```
+
+```{r}
+length(outDf)
+```
+
+```{r}
+# Select subset of columns in data frame
+outSub <- select(outDf, snippet, lead_paragraph, headline, pub_date, section_name)
+
+# Identify the widest column
+outWidth <- max(sapply(names(outSub), nchar))
+format(outSub, width = outWidth, justify = "left")
+
+```
+
+
+
+

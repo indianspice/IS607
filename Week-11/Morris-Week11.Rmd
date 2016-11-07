@@ -1,0 +1,134 @@
+---
+title: "Document Classification - IS607 Week11"
+author: "Sharon Morris"
+date: "11/06/2016"
+output: 
+  html_document: 
+    keep_md: yes
+---
+
+**Introduction**
+
+It can be useful to be able to classify new “test” documents using already classified “training” documents. A common example is using a corpus of labeled spam and ham (non-spam) e-mails to predict whether or not a new document is spam.
+
+For this project, you can start with a spam/ham dataset, then predict the class of new documents (either withheld from the training dataset or from another source such as your own spam folder). One example corpus: https://spamassassin.apache.org/publiccorpus/
+
+```{r}
+# Load libraries
+library(stringr)
+library(XML)
+library(RCurl)
+library(tm)
+```
+
+
+```{r}
+# Download files
+data <- "/Users/sharonmorris/IS607/spamham"
+#setwd(data)
+spam <- c("spam_2", "hard_ham")
+dataL <- list.files(spam)
+
+for (h in 1:length(spam)){
+    spamfiles <- as.data.frame(list.files(spam[h]), stringsAsFactor = FALSE) 
+}
+
+n <- 1
+i <- 1
+for (i in 1:nrow(spamfiles)) {
+    sFile <- str_c(spam[h], "/", spamfiles[i,1])
+    tmp <- readLines(sFile)
+    tmp <- str_c(tmp, callaspe = "")
+    txtCorpus <- Corpus(VectorSource(tmp))
+    #meta(txtCorpus[[1]], "classification") <- spam
+    tmp <- htmlParse(tmp)
+    spamE <- xpathApply(tmp, "//text()", xmlValue)
+    if (length(spamE) !=0) {
+        if (n == 1) #{
+            tmpCorpus <- Corpus(VectorSource(spamE))
+        }
+    if (i > 1) {
+        tmpCorpus <- c(tmpCorpus,Corpus(VectorSource(spamE)))
+    #}
+        n <- n + 1
+}
+}
+
+
+library(SnowballC)
+tmpCorpus <- tm_map(tmpCorpus,removeNumbers)
+# Remove punctuation
+tmpCorpus <- tm_map(tmpCorpus, content_transformer(str_replace_all), pattern = "[[:punct:]]", replacement = " ", lazy = TRUE)
+tmpCorpus <- tm_map(tmpCorpus, removeWords, words = stopwords("en"), lazy = TRUE)
+# Set to lowercase
+tmpCorpus <- tm_map(tmpCorpus, content_transformer(tolower), lazy = TRUE)
+tmpCorpus <- tm_map(tmpCorpus, PlainTextDocument, lazy = TRUE)
+tmpCorpus <- tm_map(tmpCorpus, stemDocument,lazy=TRUE)
+tmpTdm <- TermDocumentMatrix(tmpCorpus)
+tmpTdm
+
+    
+
+
+# Create term document matrix
+
+# Remove numbers
+library(SnowballC)
+tmpCorpus <- tm_map(tmpCorpus,removeNumbers)
+# Remove punctuation
+tmpCorpus <- tm_map(tmpCorpus, content_transformer(str_replace_all), pattern = "[[:punct:]]", replacement = " ", lazy = TRUE)
+tmpCorpus <- tm_map(tmpCorpus, removeWords, words = stopwords("en"), lazy = TRUE)
+# Set to lowercase
+tmpCorpus <- tm_map(tmpCorpus, content_transformer(tolower), lazy = TRUE)
+tmpCorpus <- tm_map(tmpCorpus, PlainTextDocument, lazy = TRUE)
+tmpCorpus <- tm_map(tmpCorpus, stemDocument,lazy=TRUE)
+tmpTdm <- TermDocumentMatrix(tmpCorpus)
+tmpTdm
+
+```
+
+
+```{r}
+# Create document term matrix
+dtm <- DocumentTermMatrix(tmpCorpus)
+dtm <- removeSparseTerms(dtm, 1-(10/length(tmpCorpus)))
+dtm
+```
+
+
+
+
+```{r}
+# This did not work the values empty
+
+library(RTextTools) 
+tdmLabels <- unlist(meta(tmpCorpus, "classification")) #empty
+numLabels <- length(tdmLabels)
+N <- length(tdmLabels)                #empty
+container <- create_container(dtm,
+                            labels = tdmLabels,
+                            trainSize = 1:1000,
+                            testSize = 4000:N,
+                            virgin = FALSE)
+slotNames(container)
+str(container)
+```
+
+
+```{r}
+# Create model
+# Got stuck here could not get the code to work
+
+#svmModel <- train_model(container, "SVM")
+#treeModel <- train_model(container, "TREE")
+#maxentModel <- train_model(container, "MAXENT")
+#svmOut <- classify_model(container, svmModel)
+#treeOut <- classify_model(container, treeModel)
+#maxentOut <- classify_model(container, maxentModel)
+
+#head(svmOut)
+
+```
+
+
+

@@ -1,0 +1,59 @@
+---
+title: "Discussion 11 Recommender System"
+author: "Sharon Morris"
+date: "Tuesday, November 08, 2016"
+output: html_document
+---
+# Task
+Your task is to analyze an existing recommender system that you find interesting.  
+
+You should:
+Perform a Scenario Design analysis as described below.  Consider whether it makes sense for your selected recommender system to perform scenario design twice, once for the organization (e.g. Amazon.com) and once for the organization's customers.
+
+Attempt to reverse engineer what you can about the site, from the site interface and any available information that you can find on the Internet or elsewhere.
+Include specific recommendations about how to improve the site's recommendation capabilities going forward. 
+
+
+# Macy's Real Time Recommender System
+
+
+
+## Scenario Design analysis:
+
+  a. Who are your target users? 
+  The target users are consumers looking to purchase clothing, furniture, cosmetics and other       merchandise sold through macys.com
+
+  b. What are their key goals? 
+  The key goals are to attract new customers, to retain current customers and to increase revenue
+
+  c. How can you help them achieve their goals? 
+In addition to making real time recommendations that are not known until a customer on the site makes a selection, additional recommendations can be made when the user leaves the site. 
+
+I can help them achieve their goals by refining the models to compare customer purchase history, and anything they may have placed in their cart but did not purchase. Use this information to alert the customer when similar merchandise they placed in carts but did not purchase go on sale online and at the store closest to them. 
+
+  d. Does it makes sense to perform scenario design twice, once for the organization and once for         the organization's customers? 
+  
+  It might help to perform scenario analysis for both the organization and one for the organization's customers to ensure that both needs are considered. This can improve real time recommendations to successfully persuade the customer to purchase more or to return. This can be done by segmenting customers into types to make relevant recommendations. 
+
+e. Include specific recommendations about how to improve the site's recommendation capabilities going forward.
+
+Recommendations on the the site should be of merchandis that are highly reated by other users to the site not only those that are recommended based on selection.
+
+
+
+** Reverse Engineer**
+
+The details to how this site works https://www.youtube.com/watch?v=urt504mwMtA
+
+The clothing selected by customers are used to determine what to recommended. The model is trained to know what other types of clothing a customer will selected based on what is selected. For example, if a customer selects jeans they are more likely to select polo shirts. 
+
+Little information is used about an individual customer's demographic or previous purchase history.
+
+
+**Recommendations for improvement**
+
+1. The recommendations for this site should not only include what is on the site the model can be trained to use the user's location to recommend where in a store close to the location the items can be found -- this will move customers who prefer to browse online first before then going into the stores to customers who purchase. 
+
+2. Train the model to use customer location information to compare the user, to user profiles in the same location to recommend merchandise. This will capture any regional differences
+
+3. Use information about current customers to not only recommend merchandise based on their location and previous purchase history but also to recommend some of the new fashions if the customer is looking at clothing.
